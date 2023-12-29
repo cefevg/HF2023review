@@ -58,7 +58,8 @@ plate_outlier <- function (outlier.data, run.data) {
               plate.cv = sd.clean/mean.clean) %>%
     select(!c(sd.clean, mean.clean)) %>%
     left_join(run.data) %>%
-    mutate(plate_outlier = ifelse(plate.upconf > acceptrun.highthres | plate.lowconf < acceptrun.lowthres | plate.cv > 0.2, "Y", "N"))
+    mutate(plate_meanoutlier = ifelse(plate.upconf > acceptrun.highthres | plate.lowconf < acceptrun.lowthres, "Y", "N"),
+           plate_cvoutlier = ifelse(plate.cv > 0.2, "Y", "N"))
   
   return(clean_data)
   
@@ -68,4 +69,4 @@ out.plates <- plate_outlier(outlier.data, run.data)
 
 happy.data <- out.plates %>%
   right_join(outlier.data) %>%
-  mutate(clean.data = ifelse(plate_outlier=="Y" | Outlier == "Y", "N", "Y"))
+  mutate(clean.data = ifelse(plate_meanoutlier=="Y" | Outlier == "Y" | plate_cvoutlier =="Y", "N", "Y"))
