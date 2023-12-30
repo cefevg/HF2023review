@@ -23,19 +23,6 @@ dmso.plates <- dmso.data %>%
 
 outlier.data <- outlier_detection(dmso.data, dmso.plates)
 
-outlier.data %>%
-  filter(Outlier=="N") %>%
-  ggplot(aes(x = as.factor(PLATE_NAME), y = mean.growth)) +
-  geom_point() +
-  facet_wrap(~Inoculum, scales = "free") +
-  theme_bw()
-
-outlier.data %>%
-  filter(Outlier=="N") %>%
-  ggplot(aes(x = as.factor(PLATE_NAME), y = cv.growth)) +
-  geom_point() +
-  facet_wrap(~Inoculum, scales = "free") +
-  theme_bw()
 
 ## outlier identification (plates) ##
 
