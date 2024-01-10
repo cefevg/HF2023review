@@ -42,7 +42,7 @@ ui <- navbarPage("Experimental wondering",
       # to control speed, plus looping
       numericInput("neg.reps", "DMSO replicates:",
                   min = 3, max = 100,
-                  value = 96, step = 1),
+                  value = 32, step = 1),
       
       # Input: Animation with custom interval (in ms) ----
       # to control speed, plus looping
@@ -92,7 +92,7 @@ tabPanel("CV - power analysis",
              # to control speed, plus looping
              numericInput("dmso.reps", "DMSO replicates:",
                           min = 3, max = 100,
-                          value = 96, step = 1),
+                          value = 32, step = 1),
              
              # Input: Animation with custom interval (in ms) ----
              # to control speed, plus looping
@@ -118,48 +118,8 @@ tabPanel("CV - power analysis",
              
            )
          )
-),
-
-# Within experiment vs among experiment variability
-
-tabPanel("Within vs among experiment variability",
-         
-         # Predictive stats title in the tab
-         
-         titlePanel("What's the effect of my variability?"),
-         
-         # Sidebar layout with input and output definitions ----
-         sidebarLayout(
-           
-           # Sidebar to demonstrate various slider options ----
-           sidebarPanel(
-             
-             # Input: Simple integer interval ----
-             numericInput("up.theshold", "Upper threshold:",
-                          min = 0, max = 1, value = 0.6, step = 0.01),
-             
-             # Input: Simple integer interval ----
-             numericInput("low.theshold", "Lower threshold:",
-                          min = 0, max = 1, value = 0.4, step = 0.01),
-             
-             # Input: Simple integer interval ----
-             numericInput("std.within", "Lower threshold:",
-                          min = 0, max = 1, value = 0.1, step = 0.01),
-             
-             
-             submitButton("Submit")
-             
-           ),
-           # Main panel for displaying outputs ----
-           mainPanel(
-             
-             
-             # Output: Table summarizing the values entered ----
-             plotOutput('cv.powerplot')
-             
-           )
-         )
 )
+
 
 )
 
