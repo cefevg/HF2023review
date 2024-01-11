@@ -1,0 +1,14 @@
+In this application, you can select the efficacy of the compound you intend to detect (>50%). 
+Then, you can also choose the number of replicates for the DMSO and the compounds tested. Finally, you can also pick the percentage of false positives you are willing to accept in your analyses.
+With this information, a graph is presented to you where you can see:
+The different coefficients of variation (CV, i. e. variability) you may find in your experiment and the percentage of times your compound is going to be detected as active (Power). The red line marks an 80% power threshold.
+The solid line shows the results for a compounds with a variability equivalent to the DMSO variability. The dashed line represents the results for a compound with half the variability of the DMSO.
+
+
+
+
+
+
+
+
+

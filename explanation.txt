@@ -1,0 +1,14 @@
+In this application, you can select the mean growth of the pathogen under DMSO conditions as well as its predicted coefficient of variation. 
+Then, you can also choose the number of replicates for the DMSO and the compounds tested. Finally, you can also pick the percentage of false positives you are willing to accept in your analyses.
+With this information, a graph is presented to you where you can see:
+The different potential efficacies you are going to have among the tested compounds and the percentage of times such compounds are going to be detected as active compounds (Power). The red line marks an 80% power threshold.
+The solid line shows the results for those compounds with a variability equivalent to the DMSO variability. The dashed line represents the results for those compounds with half the variability of the DMSO.
+
+
+
+
+
+
+
+
+
