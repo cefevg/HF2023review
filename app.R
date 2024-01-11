@@ -140,16 +140,15 @@ server <- function(input, output) {
   
   simulations <- function(g1.mean, g1.std, g1.reps, g2.reps, alphalevel) {
     
-    results <- data.frame(Efficacy = seq(from = 0.50, to = 0.99, by = 0.01), 
+    results <- data.frame(Efficacy = seq(from = 0.50, to = 1, by = 0.05), 
                           low.var = 0, 
-                          Power = 0,
-                          high.var = 0)
+                          Power = 0)
     
     for (eff.sim in results$Efficacy) {
       
       growth.red <- 1 - eff.sim
       
-      signif <- data.frame(signif = rep(0, 1000), lowvar = rep(0, 1000), highvar = rep(0, 1000))
+      signif <- data.frame(signif = rep(0, 1000), lowvar = rep(0, 1000))
       
       for (i in 1:1000) {
         
@@ -157,19 +156,16 @@ server <- function(input, output) {
         
         molec <- rnorm(g2.reps, growth.red*g1.mean, g1.std)
         molec.lowvar <- rnorm(g2.reps, growth.red*g1.mean, g1.std*0.5)
-        molec.highvar <- rnorm(g2.reps, growth.red*g1.mean, g1.std*1.25)
         
         molec <- unlist(lapply(molec, function (x) 100*c(mean(controls)-x)/mean(controls)))
         molec.lowvar <- unlist(lapply(molec.lowvar, function (x) 100*c(mean(controls)-x)/mean(controls)))
-        molec.highvar <- unlist(lapply(molec.highvar, function (x) 100*c(mean(controls)-x)/mean(controls)))
         
         signif$signif[i] <- t.test(molec, mu = 50, alternative = "greater", conf.level = 1 - alphalevel/100)$p.value
         signif$lowvar[i] <- t.test(molec.lowvar, mu = 50, alternative = "greater", conf.level = 1 - alphalevel/100)$p.value
-        signif$highvar[i] <- t.test(molec.highvar, mu = 50, alternative = "greater", conf.level = 1 - alphalevel/100)$p.value
         
       }
       
-      results[match(round(eff.sim,3), round(results$Efficacy, 3)),c(2:4)] <- c(sum(signif$lowvar<alphalevel/100)/10, sum(signif$signif<alphalevel/100)/10, sum(signif$highvar<alphalevel/100)/10)
+      results[match(round(eff.sim,3), round(results$Efficacy, 3)),c(2:3)] <- c(sum(signif$lowvar<alphalevel/100)/10, sum(signif$signif<alphalevel/100)/10)
       
     }
     
@@ -185,10 +181,9 @@ server <- function(input, output) {
     
     growth.red <- 1 - target.eff/100
     
-    results <- data.frame(CV = seq(from = 0.01, to = 0.5, by = 0.01), 
+    results <- data.frame(CV = seq(from = 0.01, to = 0.5, by = 0.04), 
                           low.var = 0, 
-                          Power = 0,
-                          high.var = 0)
+                          Power = 0)
     
     for (cv.sim in results$CV) {
       
@@ -196,7 +191,7 @@ server <- function(input, output) {
       
       std <- control.mean*cv
       
-      signif <- data.frame(lowvar = rep(0, 1000), signif = rep(0, 1000), highvar = rep(0, 1000))
+      signif <- data.frame(lowvar = rep(0, 1000), signif = rep(0, 1000))
       
       for (i in 1:1000) {
         
@@ -204,19 +199,16 @@ server <- function(input, output) {
         
         molec <- rnorm(target.reps, growth.red*control.mean, std)
         molec.lowvar <-  rnorm(target.reps, growth.red*control.mean, std*0.5)
-        molec.highvar <-  rnorm(target.reps, growth.red*control.mean, std*1.25)
         
         molec <- unlist(lapply(molec, function (x) 100*c(mean(controls)-x)/mean(controls)))
         molec.lowvar <- unlist(lapply(molec.lowvar, function (x) 100*c(mean(controls)-x)/mean(controls)))
-        molec.highvar <- unlist(lapply(molec.highvar, function (x) 100*c(mean(controls)-x)/mean(controls)))
         
         signif$signif[i] <- t.test(molec, mu = 50, alternative = "greater", conf.level = 1 - alphalevel2/100)$p.value
         signif$lowvar[i] <- t.test(molec.lowvar, mu = 50, alternative = "greater", conf.level = 1 - alphalevel2/100)$p.value
-        signif$highvar[i] <- t.test(molec.highvar, mu = 50, alternative = "greater", conf.level = 1 - alphalevel2/100)$p.value
         
       }
       
-      results[match(round(cv.sim,3), round(results$CV, 3)),c(2:4)] <- c(sum(signif$lowvar<alphalevel2/100)/10, sum(signif$signif<alphalevel2/100)/10, sum(signif$highvar<alphalevel2/100)/10)
+      results[match(round(cv.sim,3), round(results$CV, 3)),c(2:3)] <- c(sum(signif$lowvar<alphalevel2/100)/10, sum(signif$signif<alphalevel2/100)/10)
       
     }
     
@@ -231,7 +223,6 @@ server <- function(input, output) {
              aes(x = Efficacy, y = Power)) +
       geom_line() +
       geom_line(aes(y = low.var), linetype="dotted") +
-      geom_line(aes(y = high.var), linetype = "dotted") +
       scale_x_continuous(breaks = seq(from = 0.50, to = 0.99, by = 0.01)) +
       geom_hline(yintercept = 80, col = "red") +
       theme_bw() +
@@ -245,7 +236,6 @@ server <- function(input, output) {
       ggplot(cvsimulations(input$target.eff, input$target.reps, input$dmso.reps, input$alpha.sec), aes(x = CV, y = Power)) +
       geom_line() +
       geom_line(aes(y = low.var), linetype="dotted") +
-      geom_line(aes(y = high.var), linetype = "dotted") +
       scale_x_continuous(breaks = seq(from = 0.01, to = 0.5, by = 0.01)) +
       geom_hline(yintercept = 80, col = "red") +
       theme_bw() +
