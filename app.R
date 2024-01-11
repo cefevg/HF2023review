@@ -22,6 +22,9 @@ ui <- navbarPage("Experimental wondering",
                           
                           titlePanel("Power analysis"),
                         
+                          p(includeText("explanation.txt"), style = "font-size:20px;"),
+                          
+                          hr(),
   
   # Sidebar layout with input and output definitions ----
   sidebarLayout(
@@ -68,6 +71,10 @@ ui <- navbarPage("Experimental wondering",
       
     )
   )
+  
+  
+  
+  
 ),
 
 # CV power analysis
@@ -77,6 +84,10 @@ tabPanel("CV - power analysis",
          # Predictive stats title in the tab
          
          titlePanel("How much variation is too much variation for you?"),
+         
+         p(includeText("explanationCV.txt"), style = "font-size:20px;"),
+         
+         hr(),
          
          # Sidebar layout with input and output definitions ----
          sidebarLayout(
