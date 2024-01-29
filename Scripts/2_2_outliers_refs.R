@@ -5,11 +5,11 @@ library(tidyverse)
 
 ## outlier identification (wells) ##
 
-outlier_detection <- function (rawdata_HFformat, plates_data) {
+outlier_detection <- function (rawdata_HFformat, plates_data, level) {
   
   clean.data <- rawdata_HFformat %>%
     left_join(plates_data) %>%
-    mutate(RefsOutlier = ifelse(abs(Surface-median.growth)>6*mad.growth, "Y", "N"))
+    mutate(Well_refsoutlier = ifelse(abs(Surface-median.growth)>level*mad.growth, "Y", "N"))
   
   return(clean.data)
   
@@ -21,4 +21,4 @@ refs.plates <- refs.data %>%
             sd.growth = sd(Surface), mad.growth = mad(Surface)) %>%
   mutate(cv.growth = sd.growth/mean.growth)
 
-outlier.refsdata <- outlier_detection(refs.data, refs.plates)
+outlier.refsdata <- outlier_detection(refs.data, refs.plates, 5.2)
