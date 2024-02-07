@@ -6,7 +6,7 @@ library(tidyverse)
 cleaned.refs <- happy.refs %>%
   filter(clean.refs == "Y")
 
-summary(aov(Surface ~ PLATE_NAME*RUN_NAME*SAMPLE_NAME*DOSE, data = cleaned.refs[cleaned.refs$Inoculum=="BOTRCI",]))
+#summary(aov(Surface ~ PLATE_NAME*RUN_NAME*SAMPLE_NAME*DOSE, data = cleaned.refs[cleaned.refs$Inoculum=="BOTRCI",]))
 
 cleaned.refs <- cleaned.refs %>%
   mutate(Date = as.Date(ifelse(substr(RUN_NAME, 3, 3) == "-", 
