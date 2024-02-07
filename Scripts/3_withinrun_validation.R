@@ -5,16 +5,16 @@ library(tidyverse)
 
 ## outlier identification (plates) ##
 
-run.data <- dmso.data %>%
-  group_by(Inoculum, RUN_NAME) %>%
-  summarise(mean.run = mean(Surface), median.run = median(Surface),
-            sd.run = sd(Surface), mad.run = mad(Surface), cv.run = sd.run/mean.run) %>%
-  mutate(acceptrun.lowthres = mean.run-sd.run,
-         acceptrun.highthres = mean.run+sd.run,
-         cv.highthres = mean.run+cv.run/5,
-         cv.lowthres = mean.run-cv.run/5)
-
-plate_outlier <- function (outlier.data, run.data) {
+plate_outlier <- function (outlier.data, sds.thr, cv.thr) {
+  
+  run.data <- dmso.data %>%
+    group_by(Inoculum, RUN_NAME) %>%
+    summarise(mean.run = mean(Surface), median.run = median(Surface),
+              sd.run = sd(Surface), mad.run = mad(Surface), cv.run = sd.run/mean.run) %>%
+    mutate(acceptrun.lowthres = mean.run-sds.thr*sd.run,
+           acceptrun.highthres = mean.run+sds.thr*sd.run,
+           cv.highthres = mean.run+cv.run/5,
+           cv.lowthres = mean.run-cv.run/5)
   
   clean_data <- outlier.data %>%
     filter(Well_outlier == "N") %>%
@@ -26,13 +26,13 @@ plate_outlier <- function (outlier.data, run.data) {
               plate.cv = sd.clean/mean.clean) %>%
     left_join(run.data) %>%
     mutate(plate_meanoutlier = ifelse(plate.upconf < acceptrun.lowthres | plate.lowconf > acceptrun.highthres, "Y", "N"),
-           plate_cvoutlier = ifelse(plate.cv > 0.2, "Y", "N"))
+           plate_cvoutlier = ifelse(plate.cv > cv.thr, "Y", "N"))
   
   return(clean_data)
   
 }
 
-out.plates <- plate_outlier(outlier.data, run.data) 
+out.plates <- plate_outlier(outlier.data, 1, 0.2) 
 
 happy.data <- out.plates %>%
   select(!c(sd.clean, mean.clean)) %>%
